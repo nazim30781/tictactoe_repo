@@ -1,0 +1,12 @@
+services:
+  main_app:
+    build:
+      context: ..
+      dockerfile: Dockerfile
+    container_name: main_app
+    ports:
+    - "8000:8000"
+    env_file:
+    - ../.env
+
+    command: "python -m src.main"

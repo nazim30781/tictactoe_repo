@@ -1,0 +1,9 @@
+from src.public.domain.entities.game import Game
+
+
+class GameRepository:
+    async def save_game(self, game: Game): ...
+
+    async def get_game(self, game_oid: str) -> Game: ...
+
+    async def update_game_after_move(self, game: Game): ...
