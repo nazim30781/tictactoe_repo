@@ -6,7 +6,12 @@ services:
     container_name: main_app
     ports:
     - "8000:8000"
+    command: "python -m src.main"
     env_file:
     - ../.env
+    networks:
+    - backend
 
-    command: "python -m src.main"
+networks:
+  backend:
+    driver: bridge

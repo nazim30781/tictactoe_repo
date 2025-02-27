@@ -11,7 +11,7 @@ class MongoRepository(ABC):
     collection: str = field(default=None)
 
     def __get_connection(self):
-        client = MongoClient()
+        client = MongoClient("mongodb://mongodb:27017/")
 
         db = client[settings.mongo.db_name]
 

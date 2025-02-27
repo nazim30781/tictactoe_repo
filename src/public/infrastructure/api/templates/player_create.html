@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title></title>
+        <link rel="stylesheet" href="{{ url_for('static', path='main.css') }}">
+    </head>
+    <body>
+        <div class="register_container">
+            <form action="" class="register_form">
+                <input type="text" name="" id="username" placeholder="enter your username" class="username_i">
+                <button type="button" onclick="createPlayer(event)" class="username_b">Create</button>
+            </form>
+
+            <button type="button" onclick="find_game(event)" class="username_b">FIND GAME</button>
+        </div>
+
+        <script>
+            function createPlayer(event) {
+                username = document.getElementById("username")
+                url = "http://localhost:8000/v1/player/create_player"
+                console.log(username.value)
+
+                data = {
+                    username: username.value
+                };
+
+                fetch(url, {
+                    method: "POST",
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({username: document.getElementById("username").value})
+                })
+            }
+
+            function find_game(event) {
+                fetch("http://localhost:8000/v1/game/game_preparing", {
+                    method: "GET",
+                })
+
+                setTimeout(() => { window.location.replace("http://localhost:8000/v1/game/"); }, 1000);
+            }
+
+        </script>
+    </body>
+</html>

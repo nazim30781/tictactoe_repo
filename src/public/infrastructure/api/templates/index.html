@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Chat</title>
+        <link rel="stylesheet" href="{{ url_for('static', path='style.css') }}">
+    </head>
+    <body>
+        <h1 id="wait">WAITING OTHER PLAYER</h1>
+        <h1 class="" id="step"></h1>
+        <h1 id="player"></h1>
+        <h1 id="opponent"></h1>
+        <div class="play-board">
+            <div class="details">
+                <div class="players">
+                    <div class="slider"></div>
+                </div>
+            </div>
+
+            <div class="finish_panel" id="finish_panel">
+                <h1 class="result" id="result">You win</h1>
+                <button class="go_home" type="button" onclick="goHome(event)">Home</button>
+            </div>
+
+            <div class="play-area">
+                <section>
+                    <button class="box1" id="0_0" onclick="sendMessage(0, 0)"></button>
+                    <button class="box2" id="0_1" onclick="sendMessage(0, 1)"></button>
+                    <button class="box3" id="0_2" onclick="sendMessage(0, 2)"></button>
+                </section>
+                <section>
+                    <button class="box4" id="1_0" onclick="sendMessage(1, 0)"></button>
+                    <button class="box5" id="1_1" onclick="sendMessage(1, 1)"></button>
+                    <button class="box6" id="1_2" onclick="sendMessage(1, 2)"></button>
+                </section>
+                <section>
+                    <button class="box7" id="2_0" onclick="sendMessage(2, 0)"></button>
+                    <button class="box8" id="2_1" onclick="sendMessage(2, 1)"></button>
+                    <button class="box9" id="2_2" onclick="sendMessage(2, 2)"></button>
+                </section>
+
+
+            </div>
+            </div>
+        </div>
+        <script>
+            document.getElementById("finish_panel").style.display = "none"
+            document.cookie = "start=0"
+            var ws = new WebSocket("ws://localhost:8000/v1/game/3/room");
+            var cookie = document.cookie
+
+            data = {
+                "cookie": cookie,
+            };
+
+            console.log(document.cookie)
+
+            let start = false
+            let cell_value = ""
+            let current_cell_value = ""
+
+            setTimeout(() => { ws.send(JSON.stringify(data)); }, 1000);
+
+            ws.onmessage = function(event) {
+                data = JSON.parse(event.data)
+                console.log(data)
+                if ("start" in data) {
+                    document.cookie = `cell_value=${data["cell_value"]}`
+                    cell_value = data["cell_value"]
+
+                    document.getElementById("player").innerText = `Your value is - ${cell_value}`
+                    document.getElementById("step").innerText = data["current_cell_value"]
+                    current_cell_value = data["current_cell_value"]
+                    document.getElementById("opponent").innerText = `opponent: ${data['opponent']}`
+                    document.getElementById("wait").remove()
+
+                    start = true
+                }
+
+                if ("finish" in data) {
+                    document.cookie = `win_value=${data["win_value"]}`
+                    if (data["win_value"] == cell_value) {
+                        document.getElementById("result").innerText = "You win"
+                    }else {
+                        document.getElementById("result").innerText = "You lose"
+                    }
+                    document.getElementById("finish_panel").style.display = "block"
+                }
+
+                if ("move" in data) {
+                    document.getElementById(`${data['row']}_${data['column']}`).innerText = data['cell_value']
+                    document.getElementById("step").innerText = data["current_cell_value"]
+                    current_cell_value = data["current_cell_value"]
+                }
+            };
+
+            function sendMessage(row, column) {
+                if (start) {
+                    if (document.getElementById(`${row}_${column}`).innerText == "") {
+                        if (current_cell_value == cell_value) {
+                            indexes_data = {
+                                "cookie": document.cookie,
+                                "row": row,
+                                "column": column,
+                            };
+        
+                            ws.send(JSON.stringify(indexes_data))
+                        }
+                    }
+                }
+            }
+
+            function goHome(event) {
+                window.location.replace("http://localhost:8000/v1/player/player_create_page")
+            }
+        </script>
+    </body>
+</html>

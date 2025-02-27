@@ -1,8 +1,6 @@
 from fastapi import APIRouter, Request, Response, WebSocket
-from fastapi.responses import HTMLResponse
+from fastapi.templating import Jinja2Templates
 
-from src.public.domain.entities.player import Player
-from src.public.domain.enums import cell_value
 from src.public.domain.enums.dimension import SupportedDimensions
 from src.public.infrastructure.api.fastapi_.v1.dependencies.usecases.game import (
     GameCreateUsecaseDependency,
@@ -21,17 +19,21 @@ from src.public.infrastructure.api.fastapi_.v1.routers.services.games import (
 from src.public.infrastructure.api.fastapi_.v1.routers.utils.get_cookie import (
     get_cookie,
 )
-from .templates.index import html
+from src.settings import settings
 
 
 router = APIRouter()
 
+temlpates = Jinja2Templates(directory=settings.path.templates)
 rooms_manager = RoomsManager()
 
 
 @router.get("/")
-async def get_html():
-    return HTMLResponse(html)
+async def get_html(request: Request):
+    return temlpates.TemplateResponse(
+        request=request,
+        name="index.html",
+    )
 
 
 @router.websocket("/3/room")
@@ -70,6 +72,7 @@ async def game(
                 cookie,
                 move_uscase,
                 check_win_usecase,
+                rooms_manager,
             )
 
 
@@ -83,6 +86,7 @@ async def game_preparing(
     player_name = request.cookies["player_name"]
 
     room = rooms_manager.connect_player(player_oid, player_name)
+
     game_oid = await game_create_usecase.execute()
     room.game_oid = game_oid
 

@@ -61,6 +61,8 @@ async def send_game_info_to_players(room: Room, game: Game):
         {
             "start": True,
             "cell_value": game.player_1.cell_value,
+            "current_cell_value": game.current_cell_value,
+            "opponent": game.player_2.name,
         }
     )
 
@@ -68,6 +70,8 @@ async def send_game_info_to_players(room: Room, game: Game):
         {
             "start": True,
             "cell_value": game.player_2.cell_value,
+            "current_cell_value": game.current_cell_value,
+            "opponent": game.player_1.name,
         }
     )
 
@@ -78,6 +82,7 @@ async def move(
     cookie: dict,
     move_usecase: GameMoveUsecaseDependency,
     check_win_usecase: GameCheckWinUsecaseDependency,
+    rooms_manager: RoomsManager,
 ):
     game = await move_usecase.execute(
         room.game_oid,
@@ -86,18 +91,21 @@ async def move(
         int(data["column"]),
     )
 
-    await send_move_info_to_players(room, data, cookie)
+    await send_move_info_to_players(room, data, cookie, game)
 
     result = await check_win_usecase.execute(game.oid)
 
     if result:
         await send_game_result_to_players(room, result)
+        rooms_manager.delete_room(room)
+        print(rooms_manager.get_rooms())
 
 
 async def send_move_info_to_players(
     room: Room,
     data: dict,
     cookie: dict,
+    game: Game,
 ):
     await room.player_1.websocket.send_json(
         {
@@ -105,6 +113,7 @@ async def send_move_info_to_players(
             "row": data["row"],
             "column": data["column"],
             "cell_value": cookie["cell_value"],
+            "current_cell_value": game.current_cell_value,
         }
     )
 
@@ -114,6 +123,7 @@ async def send_move_info_to_players(
             "row": data["row"],
             "column": data["column"],
             "cell_value": cookie["cell_value"],
+            "current_cell_value": game.current_cell_value,
         }
     )
 

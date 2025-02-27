@@ -18,9 +18,9 @@ class Board:
     def get_empty_cells(self) -> list[CellPosition]:
         cells = list()
 
-        for row in self.cells:
+        for row in self.__cells:
             for col in row:
-                if self.cells[row, col].cell_value == CellValue.E:
+                if self.__cells[row, col].cell_value == CellValue.E:
                     cells.append(CellPosition(row, col))
 
         return cells

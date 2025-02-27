@@ -19,6 +19,8 @@ class MongoGameRepository(MongoRepository, GameRepository):
 
         self._get_collection().insert_one(game_)
 
+        return True
+
     async def update_game_after_move(self, game: Game):
         game_ = dict_from_game(game)
 
@@ -30,3 +32,5 @@ class MongoGameRepository(MongoRepository, GameRepository):
         }
 
         self._get_collection().update_one({"oid": game.oid}, new_data)
+
+        return True

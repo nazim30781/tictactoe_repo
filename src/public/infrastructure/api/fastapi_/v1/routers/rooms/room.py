@@ -79,7 +79,6 @@ class RoomsManager:
             room.player_1.websocket = websocket
             return False
         else:
-            print("yes")
             room.player_2.websocket = websocket
             return True
 
@@ -90,3 +89,6 @@ class RoomsManager:
 
     def get_rooms(self):
         print(self.__rooms)
+
+    def delete_room(self, room: Room):
+        self.__rooms.remove(room)

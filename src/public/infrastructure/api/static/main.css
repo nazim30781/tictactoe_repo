@@ -1,0 +1,51 @@
+body {
+    height: 100%;
+    width: 100%;
+}
+
+.register_container {
+    height: 30%;
+    width: 50%;
+    border: 1px solid #e5e5e5;
+    border-radius: 30px;
+    margin: 10% auto;
+
+    box-shadow: #373737;
+}
+
+.register_form {
+    display: block;
+}
+
+.username_i {
+    height: 50px;
+    width: 100%;
+    border: none;
+    border-bottom: 2.5px solid #373737;
+    font-size: 100%;
+    text-align: center;
+}
+
+.username_i:focus {
+    outline: none;
+    outline-offset: 0;
+}
+
+.username_b {
+    display: block;
+    margin:  10% auto;
+
+    height: 50%;
+    width: 40%;
+    font-size: 20px;
+    font-weight: bold;
+    font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
+    padding: 10px;
+
+    border-radius: 9px;
+    background-color: blue;
+    color: #fff;
+
+
+    border: none;
+}

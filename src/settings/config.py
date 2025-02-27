@@ -3,13 +3,18 @@ from pydantic_settings import BaseSettings, SettingsConfigDict
 
 
 class MongoConfig(BaseModel):
-    host: str = "localhost"
+    host: str = "0.0.0.0"
     port: int = 27017
     db_name: str = "tictactoe"
 
 
+class PathConfig(BaseModel):
+    static: str = "src/public/infrastructure/api/static"
+    templates: str = "src/public/infrastructure/api/templates"
+
+
 class RunConfig(BaseModel):
-    host: str = "localhost"
+    host: str = "0.0.0.0"
     port: int = 8000
 
 
@@ -30,6 +35,7 @@ class Settings(BaseSettings):
     run: RunConfig = RunConfig()
     mongo: MongoConfig = MongoConfig()
     prefix: PrefixConfig = PrefixConfig()
+    path: PathConfig = PathConfig()
 
 
 settings = Settings()

@@ -5,6 +5,7 @@ from src.public.infrastructure.repositories.mongo.game import MongoGameRepositor
 
 
 def main():
+    print("start")
     game_repo = MongoGameRepository("games")
     game_usecases_builder = GameUsecasesBuilder(game_repo)
 

@@ -17,5 +17,4 @@ COPY src ./src
 
 COPY .env ./.env
 
-RUN python3 -m src.main
-
+CMD ["python", "-m", "src.main"]
